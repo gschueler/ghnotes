@@ -9,10 +9,10 @@ import com.beust.jcommander.Parameter
  * Time: 12:04 PM
  */
 class IssuesCommand {
-    @Parameter(names = "-milestone",description = "milestone", required = true)
+    @Parameter(names = "-milestone",description = "Project Milestone name", required = true)
     String milestone
-    @Parameter(names = "-state", description = "state", required = true)
+    @Parameter(names = "-state", description = "Issue state to find", required = true)
     String state
-    @Parameter(names = "-tags",description = "comma-separated tags")
+    @Parameter(names = "-tags",description = "Issue tags to match, comma-separated")
     List<String> tags
 }

@@ -30,8 +30,8 @@ class Issues {
         def issues = github.getIssues(ms, command.state)
 
         if (command.tags) {
-            System.err.println("searching for tags: "+command.tags)
-            issues = issues.findAll { command.tags.intersect(it.labels*.name).size()>0 }
+            System.err.println("Searching for tags: "+command.tags)
+            issues = issues.findAll { it.labels*.name.containsAll(command.tags) }
         }
 
         //println "milestone: ${ms.title} state=${state}${tags?' tag='+tags:''} has " + issues.size() + ' issues'

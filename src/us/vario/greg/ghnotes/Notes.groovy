@@ -17,6 +17,11 @@ class Notes {
         commander.addCommand("issues", issuescmd)
         commander.parse(args)
 
+        if(command.help){
+            commander.setProgramName("ghnotes")
+            commander.usage()
+            return
+        }
 
         def gh = new Github(command.user, command.password, command.org, command.project)
         if ("issues" == commander.getParsedCommand()) {
