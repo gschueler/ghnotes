@@ -33,7 +33,7 @@ class Notes {
         def gh = new Github(command.user, command.password, command.org, command.project)
         gh.debug=command.debug
         if ("issues" == commander.getParsedCommand()) {
-            new Issues(github: gh).formatIssues(issuescmd)
+            new Issues(github: gh,command:  issuescmd).format()
         }else if ("raw" == commander.getParsedCommand()) {
             new Raw(github: gh).formatRaw(rawcmd)
         } else {
