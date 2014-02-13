@@ -25,6 +25,9 @@ public class Github implements GithubAPI{
     static String ISSUES_PATH = "/issues"
     static String NEW_MILESTONE = "/milestones"
     static String NEW_LABEL_PATH = "/labels"
+    static String PULLS = "/pulls"
+    static String PULL_NUMBER = PULLS+"/{NUMBER}"
+    static String PULL_COMMITS = PULL_NUMBER + "/commits"
     static String ISSUE_PATH = ISSUES_PATH + "/{ISSUE}"
     static String ISSUE_COMMENTS_PATH = ISSUE_PATH + "/comments"
     static String GH_BETA_JSON_CONTENTTYPE = "application/vnd.github.beta+json"
@@ -191,6 +194,9 @@ public class Github implements GithubAPI{
     public getJson(String uri) {
         responseJson(get(projectRest, uri))
     }
+    public getJson(String uri,Map comps) {
+        responseJson(get(projectRest, uri, comps))
+    }
     public getMilestones() {
         getJson(NEW_MILESTONE)
     }
@@ -257,5 +263,9 @@ public class Github implements GithubAPI{
         def content = [body: comment]
         def response = post(projectRest,ISSUE_COMMENTS_PATH,[ISSUE:issuenum],null,null,serializeJson(content))
         return responseJson(response)
+    }
+
+    public List getCommitsForPull(number) {
+        getJson(PULL_COMMITS,[NUMBER:number])
     }
 }
