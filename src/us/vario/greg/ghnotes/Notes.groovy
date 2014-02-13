@@ -26,7 +26,7 @@ class Notes {
         }
         if(command.debug){
             System.err.println("args: ")
-            System.err.println(command + issuescmd)
+            System.err.println("${command} ${issuescmd}")
         }
         issuescmd.debug=command.debug
 
