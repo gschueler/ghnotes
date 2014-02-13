@@ -212,7 +212,10 @@ public class Github implements GithubAPI{
         }
         def response = get(projectRest, path, [:], [:], params)
         def nextpage = extractNextPageUrl(response)
-        if (nextpage) {
+        if(debug && nextpage){
+            System.err.println("getIssues, skipping nextpage: "+nextpage)
+        }
+        if (nextpage && !debug) {
             return responseJson(response) + (getIssues(milestone, state, nextpage))
         } else {
             return responseJson(response)

@@ -15,4 +15,14 @@ class IssuesCommand {
     String state
     @Parameter(names = "-tags",description = "Issue tags to match, comma-separated")
     List<String> tags
+    boolean debug
+    @Override
+    public String toString() {
+        return "issues " +
+                "-milestone '" + milestone + '\'' +
+                " -state '" + state + '\'' +
+                (tags?
+                " -tags " + tags  : '')
+        ;
+    }
 }

@@ -22,4 +22,22 @@ class NotesCommand {
     String org
     @Parameter(names = "-proj", description = "Github Project name", required = true)
     String project
+    @Parameter(names = "-debug", hidden = true, arity = 0)
+    boolean debug
+
+
+    @Override
+    public String toString() {
+        return "ghnotes " +
+                (help?
+                " -h" :'')+
+                (user?
+                " -user '" + user + '\'' : '')+
+                (password?
+                " -password '" + password + '\'' :'')+
+                " -org '" + org + '\'' +
+                " -project '" + project + '\'' +
+
+                (parameters?: '') ;
+    }
 }
