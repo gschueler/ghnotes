@@ -210,7 +210,7 @@ public class Github implements GithubAPI{
         if (state) {
             params.state = state.toString()
         }
-        def response = get(projectRest,path,[:], params)
+        def response = get(projectRest, path, [:], [:], params)
         def nextpage = extractNextPageUrl(response)
         if (nextpage) {
             return responseJson(response) + (getIssues(milestone, state, nextpage))
