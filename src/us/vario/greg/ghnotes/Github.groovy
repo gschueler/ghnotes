@@ -18,7 +18,7 @@ import javax.ws.rs.core.MultivaluedMap
  * Date: 2/11/14
  * Time: 4:51 PM
  */
-public class Github {
+public class Github implements GithubAPI{
     static String BASE_URL = "https://api.github.com"
     static String ORG_PATH = "/repos/{ORG}"
     static String PROJ_PATH = ORG_PATH + "/{PROJECT}"
