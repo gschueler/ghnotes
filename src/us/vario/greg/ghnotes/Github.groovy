@@ -188,9 +188,11 @@ public class Github implements GithubAPI{
             post(ClientResponse.class,content);
         }
     }
-
+    public getJson(String uri) {
+        responseJson(get(projectRest, uri))
+    }
     public getMilestones() {
-        responseJson(get(projectRest, NEW_MILESTONE))
+        getJson(NEW_MILESTONE)
     }
 
     public getIssues(milestone = null, state = null, nextUrl = null) {
