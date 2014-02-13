@@ -14,7 +14,9 @@ class Notes {
         def command = new NotesCommand()
         def commander = new JCommander(command);
         def issuescmd = new IssuesCommand()
+        def rawcmd = new RawCommand()
         commander.addCommand("issues", issuescmd)
+        commander.addCommand("raw", rawcmd)
         commander.parse(args)
 
         if(command.help){
@@ -26,6 +28,8 @@ class Notes {
         def gh = new Github(command.user, command.password, command.org, command.project)
         if ("issues" == commander.getParsedCommand()) {
             new Issues(github: gh).formatIssues(issuescmd)
+        }else if ("raw" == commander.getParsedCommand()) {
+            new Raw(github: gh).formatRaw(rawcmd)
         } else {
             System.err.println("subcommands available: issues")
         }
