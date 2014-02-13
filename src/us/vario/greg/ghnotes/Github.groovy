@@ -11,6 +11,7 @@ import groovy.xml.MarkupBuilder
 import org.codehaus.jackson.map.ObjectMapper
 
 import javax.ws.rs.core.MultivaluedMap
+import javax.ws.rs.core.UriBuilder
 
 /**
  * $INTERFACE is ...
@@ -34,7 +35,7 @@ public class Github implements GithubAPI{
     boolean debug
     def mock
     def mapper = new ObjectMapper()
-    Client projectRest
+    Client restClient
     def static onFailure = { response ->
         throw new RuntimeException("Request failed: ${response}: ${responseText(response)}")
     }
@@ -53,7 +54,7 @@ public class Github implements GithubAPI{
             pathurl = m.group(2)
             qurl = m.group(3)
         }
-        def uribuild = javax.ws.rs.core.UriBuilder.fromUri(baseurl)
+        def uribuild = UriBuilder.fromUri(baseurl)
 
         if (pathurl) {
             uribuild = uribuild.path(pathurl)
@@ -75,7 +76,7 @@ public class Github implements GithubAPI{
         this(null, null, org, project)
     }
     public Github(user, password, org, project) {
-        projectRest = mkClient()
+        restClient = mkClient()
         pathComponents= [ORG: org, PROJECT: project]
         if (user && password) {
             defaultHeaders = basicAuthHeader(user, password)
@@ -86,7 +87,7 @@ public class Github implements GithubAPI{
     void setDebug(boolean debug){
         this.debug=debug
         if(debug){
-            projectRest.addFilter(new LoggingFilter(System.out))
+            restClient.addFilter(new LoggingFilter(System.out))
         }
     }
 
@@ -160,7 +161,7 @@ public class Github implements GithubAPI{
         response.getEntity(String.class)
     }
 
-    private ClientResponse get(Client client, String uri,Map components=[:], Map headers=[:], Map params=[:]){
+    ClientResponse get(Client client, String uri,Map components=[:], Map headers=[:], Map params=[:]){
         makeRequest(client,requestBuilder(client,uri, components, headers, params)) {
             get(ClientResponse.class);
         }
@@ -192,10 +193,10 @@ public class Github implements GithubAPI{
         }
     }
     public getJson(String uri) {
-        responseJson(get(projectRest, uri))
+        responseJson(get(restClient, uri))
     }
     public getJson(String uri,Map comps) {
-        responseJson(get(projectRest, uri, comps))
+        responseJson(get(restClient, uri, comps))
     }
     public getMilestones() {
         getJson(NEW_MILESTONE)
@@ -216,7 +217,7 @@ public class Github implements GithubAPI{
         if (state) {
             params.state = state.toString()
         }
-        def response = get(projectRest, path, [:], [:], params)
+        def response = get(restClient, path, [:], [:], params)
         def nextpage = extractNextPageUrl(response)
         if(debug && nextpage){
             System.err.println("getIssues, skipping nextpage: "+nextpage)
@@ -229,7 +230,7 @@ public class Github implements GithubAPI{
     }
 
     public getLabel(label) {
-        def response = get(projectRest,NEW_LABEL_PATH,[LABEL:label])
+        def response = get(restClient,NEW_LABEL_PATH,[LABEL:label])
         if(response.status==404){
             return null
         }
@@ -242,7 +243,7 @@ public class Github implements GithubAPI{
             data.color = color
         }
         def jsondata = serializeJson(data)
-        def response = post(projectRest,NEW_LABEL_PATH,null,null,null,jsondata)
+        def response = post(restClient,NEW_LABEL_PATH,null,null,null,jsondata)
         responseJson(response)
     }
 
@@ -255,13 +256,13 @@ public class Github implements GithubAPI{
         def payload = [title: title, body: body, labels: labels]
         //skip milestone
 
-        def response = post(projectRest,ISSUES_PATH,null,null,null,serializeJson(payload))
+        def response = post(restClient,ISSUES_PATH,null,null,null,serializeJson(payload))
         return responseJson(response)
     }
 
     public addComment(issuenum, comment) {
         def content = [body: comment]
-        def response = post(projectRest,ISSUE_COMMENTS_PATH,[ISSUE:issuenum],null,null,serializeJson(content))
+        def response = post(restClient,ISSUE_COMMENTS_PATH,[ISSUE:issuenum],null,null,serializeJson(content))
         return responseJson(response)
     }
 
