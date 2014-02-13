@@ -24,8 +24,14 @@ class Notes {
             commander.usage()
             return
         }
+        if(command.debug){
+            System.err.println("args: ")
+            System.err.println(command + issuescmd)
+        }
+        issuescmd.debug=command.debug
 
         def gh = new Github(command.user, command.password, command.org, command.project)
+        gh.debug=command.debug
         if ("issues" == commander.getParsedCommand()) {
             new Issues(github: gh).formatIssues(issuescmd)
         }else if ("raw" == commander.getParsedCommand()) {
