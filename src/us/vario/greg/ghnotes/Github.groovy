@@ -4,6 +4,7 @@ import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientResponse
 import com.sun.jersey.api.client.WebResource
 import com.sun.jersey.api.client.config.DefaultClientConfig
+import com.sun.jersey.api.client.filter.LoggingFilter
 import com.sun.jersey.client.urlconnection.URLConnectionClientHandler
 import com.sun.jersey.core.util.MultivaluedMapImpl
 import groovy.xml.MarkupBuilder
@@ -27,6 +28,7 @@ public class Github {
     static String ISSUE_PATH = ISSUES_PATH + "/{ISSUE}"
     static String ISSUE_COMMENTS_PATH = ISSUE_PATH + "/comments"
     static String GH_BETA_JSON_CONTENTTYPE = "application/vnd.github.beta+json"
+    boolean debug
     def mock
     def mapper = new ObjectMapper()
     Client projectRest
@@ -77,6 +79,12 @@ public class Github {
         }
         defaultHeaders['Content-Type'] = 'application/json'
         defaultAccept = 'application/json'
+    }
+    void setDebug(boolean debug){
+        this.debug=debug
+        if(debug){
+            projectRest.addFilter(new LoggingFilter(System.out))
+        }
     }
 
     public serializeJson(data) {
