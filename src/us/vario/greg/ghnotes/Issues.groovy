@@ -30,7 +30,7 @@ class Issues {
     public static Map<String,String> commitAuthors(List commits){
         def authors=new HashMap<String,String>()
         ['author','committer'].each{type->
-            commits.each{commit->
+            commits.findAll{it}.each{commit->
                 String key,user
                 if(commit[type]){
                     key=commit[type].login
@@ -60,14 +60,19 @@ class Issues {
         users
     }
     public List getIssueCommits(List issues) {
-
+        issues.collect{github.getCommitsForIssue(it.number)}.flatten()
     }
     public Map<String,String> getIssueContributors(List issues){
         HashMap<String,String> names=[:]
-        def issueUsers=getIssueUsers(issues)
-        if(issueUsers){
-            names.putAll(issueUsers)
+        def icommits=getIssueCommits(issues)
+        def iauthors = commitAuthors(icommits)
+        if (iauthors) {
+            names.putAll(iauthors)
         }
+        //def issueUsers=getIssueUsers(issues)
+//        if(issueUsers){
+//            names.putAll(issueUsers)
+//        }
         def pulls = issues.findAll{it.pull_request?.html_url}//pull_request may be present but html_url is null
         if(pulls){
             pulls.each{ Map pull->

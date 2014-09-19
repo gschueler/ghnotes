@@ -24,6 +24,8 @@ public class Github implements GithubAPI{
     static String ORG_PATH = "/repos/{ORG}"
     static String PROJ_PATH = ORG_PATH + "/{PROJECT}"
     static String ISSUES_PATH = "/issues"
+    static String COMMITS_PATH = "/commits"
+    static String COMMIT_SHA_PATH = COMMITS_PATH+ "/{SHA}"
     static String NEW_MILESTONE = "/milestones"
     static String NEW_LABEL_PATH = "/labels"
     static String PULLS = "/pulls"
@@ -31,6 +33,7 @@ public class Github implements GithubAPI{
     static String PULL_COMMITS = PULL_NUMBER + "/commits"
     static String ISSUE_PATH = ISSUES_PATH + "/{ISSUE}"
     static String ISSUE_COMMENTS_PATH = ISSUE_PATH + "/comments"
+    static String ISSUE_EVENTS_PATH = ISSUE_PATH + "/events"
     static String GH_BETA_JSON_CONTENTTYPE = "application/vnd.github.beta+json"
     boolean debug
     def mock
@@ -268,5 +271,13 @@ public class Github implements GithubAPI{
 
     public List getCommitsForPull(number) {
         getJson(PULL_COMMITS,[NUMBER:number])
+    }
+    public List getCommitsForIssue(issuenum) {
+        getJson(ISSUE_EVENTS_PATH,[ISSUE:issuenum]).findAll{it.commit_id}.collect{
+            getCommit(it.commit_id)
+        }
+    }
+    public def getCommit(sha) {
+        getJson(COMMIT_SHA_PATH,[SHA:sha])
     }
 }
