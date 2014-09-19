@@ -31,6 +31,10 @@ class Notes {
         issuescmd.debug=command.debug
 
         def gh = new Github(command.user, command.password, command.org, command.project)
+        gh.cachedir=new File("githubcache")
+        if(!gh.cachedir.exists()){
+            gh.cachedir.mkdirs()
+        }
         gh.debug=command.debug
         if ("issues" == commander.getParsedCommand()) {
             new Issues(github: gh,command:  issuescmd).format()
