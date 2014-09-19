@@ -1,9 +1,10 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: 'maven'
 
-group = "${group}"
-version = "${version}"
+group = "us.vario.greg"
+version = '0.1'
 description = "Generate release notes from github milestones and commits"
 mainClassName="us.vario.greg.ghnotes.Notes"
 
