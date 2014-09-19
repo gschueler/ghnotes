@@ -19,26 +19,31 @@ class Issues {
         }
     }
 
-    public static void formatContributorsMarkdown(Map users) {
+    public static void formatContributorsMarkdown(Map users, label="Contributors") {
         if (users) {
-            println "## Contributors\n"
+            println "## ${label}\n"
         }
-        users.each { author ->
-            println "* ${author.value}" + (author.value != author.key ? " (${author.key})" : '')
+        users.collect { author ->
+            "${author.value}" + (author.value != author.key ? " (${author.key})" : '')
+        }.sort().each{ text->
+            println "* ${text}"
         }
     }
     public static Map<String,String> commitAuthors(List commits){
         def authors=new HashMap<String,String>()
         ['author','committer'].each{type->
-            commits.findAll{it}.each{commit->
+            commits.each{commit->
                 String key,user
                 if(commit[type]){
                     key=commit[type].login
                 }
                 if(commit.commit?.getAt(type)?.name){
                     user= commit.commit[type].name
-                }else{
+                }
+                if(key && !user){
                     user=key
+                }else if(user && !key){
+                    key=user
                 }
                 if(key){
                     authors[key]=user
@@ -88,6 +93,15 @@ class Issues {
         }
         names
     }
+
+    public Map<String, String> getIssueReporters(List issues) {
+        HashMap<String, String> names = [:]
+        issues.each{
+            names[it.user.login]= it.user.login
+        }
+
+        names
+    }
     public void formatContributors(){
         def list = listIssues()
         def authors = getIssueContributors(list)
@@ -97,10 +111,13 @@ class Issues {
     public void format() {
         def list = listIssues()
         def authors=getIssueContributors(list)
+        def reporters = getIssueReporters(list)
         if (command.debug) {
             println authors
         } else {
             formatContributorsMarkdown(authors)
+            println()
+            formatContributorsMarkdown(reporters, "Bug Reporters")
             println()
             formatIssuesMarkdown(list)
         }
