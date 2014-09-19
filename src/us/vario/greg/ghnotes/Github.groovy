@@ -38,6 +38,7 @@ public class Github implements GithubAPI{
     boolean debug
     def mock
     def mapper = new ObjectMapper()
+    File cachedir
     Client restClient
     def static onFailure = { response ->
         throw new RuntimeException("Request failed: ${response}: ${responseText(response)}")
@@ -46,6 +47,33 @@ public class Github implements GithubAPI{
         DefaultClientConfig config = new DefaultClientConfig();
         config.getProperties().put(URLConnectionClientHandler.PROPERTY_HTTP_URL_CONNECTION_SET_METHOD_WORKAROUND, true);
         return Client.create(config);
+    }
+    Object cacheJson(String reqid,jsondata){
+        if(null==cachedir){
+            return jsondata
+        }
+        def outfile=new File(cachedir,reqid)
+        if(!outfile.parentFile.exists()){
+            outfile.parentFile.mkdirs()
+        }
+        outfile.withOutputStream {out->
+            serializeJson(jsondata,out)
+        }
+        jsondata
+    }
+
+    Object loadCacheJson(String reqid) {
+        if(null==cachedir){
+            return null
+        }
+        def outfile = new File(cachedir, reqid)
+        def result=null
+        if(outfile.exists()){
+            outfile.withInputStream {is->
+                result=new ObjectMapper().readValue(is, Object.class)
+            }
+        }
+        return result
     }
     public static createUri(String urlString, Map comps) {
         String baseurl = urlString
@@ -96,8 +124,12 @@ public class Github implements GithubAPI{
 
     public serializeJson(data) {
         def dst = new ByteArrayOutputStream()
-        mapper.writeValue(dst, data)
+        serializeJson(data,dst)
         dst.toString()
+    }
+
+    public serializeJson(data,OutputStream outstream) {
+        mapper.writeValue(outstream, data)
     }
 
     private extractNextPageUrl(response) {
@@ -196,10 +228,21 @@ public class Github implements GithubAPI{
         }
     }
     public getJson(String uri) {
-        responseJson(get(restClient, uri))
+        def result=loadCacheJson(uri)
+        if(null!=result){
+            return result
+        }
+        result=responseJson(get(restClient, uri))
+        cacheJson(uri,result)
     }
     public getJson(String uri,Map comps) {
-        responseJson(get(restClient, uri, comps))
+        def reqid = createUri(uri, comps).toString()
+        def result = loadCacheJson(reqid)
+        if(null!=result){
+            return result
+        }
+        result=responseJson(get(restClient, uri, comps))
+        cacheJson(reqid,result)
     }
     public getMilestones() {
         getJson(NEW_MILESTONE)
