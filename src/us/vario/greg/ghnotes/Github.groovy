@@ -319,8 +319,12 @@ public class Github implements GithubAPI{
         getJson(PULL_COMMITS,[NUMBER:number])
     }
     public List getCommitsForIssue(issuenum) {
-        getJson(ISSUE_EVENTS_PATH,[ISSUE:issuenum]).findAll{it.commit_id}.collect{
+        try{
+        return getJson(ISSUE_EVENTS_PATH,[ISSUE:issuenum]).findAll{it.commit_id}.collect{
             getCommit(it.commit_id)
+        }
+        }catch(RuntimeException e){
+            []
         }
     }
     public def getCommit(sha) {
