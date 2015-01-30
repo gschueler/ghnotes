@@ -8,5 +8,6 @@ package us.vario.greg.ghnotes
  */
 public interface GithubAPI {
     public getMilestones()
+    public getTags()
 
 }

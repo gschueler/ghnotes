@@ -27,6 +27,7 @@ public class Github implements GithubAPI{
     static String COMMITS_PATH = "/commits"
     static String COMMIT_SHA_PATH = COMMITS_PATH+ "/{SHA}"
     static String NEW_MILESTONE = "/milestones"
+    static String GET_TAGS = "/tags"
     static String NEW_LABEL_PATH = "/labels"
     static String PULLS = "/pulls"
     static String PULL_NUMBER = PULLS+"/{NUMBER}"
@@ -103,12 +104,18 @@ public class Github implements GithubAPI{
     String defaultAccept
     Map pathComponents
     boolean xmlDeclaration=true
+    String org
+    String project
+    String baseURL
     public Github(org, project) {
         this(null, null, org, project)
     }
     public Github(user, password, org, project) {
+        this.org=org
+        this.project=project
         restClient = mkClient()
         pathComponents= [ORG: org, PROJECT: project]
+        baseURL=createUri(BASE_URL + PROJ_PATH , pathComponents)
         if (user && password) {
             defaultHeaders = basicAuthHeader(user, password)
         }
@@ -249,6 +256,10 @@ public class Github implements GithubAPI{
     }
     public getMilestones() {
         getJson(NEW_MILESTONE,false)
+    }
+
+    public getTags() {
+        getJson(GET_TAGS,false)
     }
 
     public getIssues(milestone = null, state = null, nextUrl = null) {
