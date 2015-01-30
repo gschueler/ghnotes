@@ -227,13 +227,16 @@ public class Github implements GithubAPI{
             post(ClientResponse.class,content);
         }
     }
-    public getJson(String uri) {
-        def result=loadCacheJson(uri)
+    public getJson(String uri, boolean useCache) {
+        def result=useCache?loadCacheJson(uri):null
         if(null!=result){
             return result
         }
         result=responseJson(get(restClient, uri))
         cacheJson(uri,result)
+    }
+    public getJson(String uri) {
+        return getJson(uri,true)
     }
     public getJson(String uri,Map comps) {
         def reqid = createUri(uri, comps).toString()
@@ -245,7 +248,7 @@ public class Github implements GithubAPI{
         cacheJson(reqid,result)
     }
     public getMilestones() {
-        getJson(NEW_MILESTONE)
+        getJson(NEW_MILESTONE,false)
     }
 
     public getIssues(milestone = null, state = null, nextUrl = null) {
