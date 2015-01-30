@@ -14,7 +14,7 @@ class Issues {
             println "## Issues\n"
         }
         issues.each { t ->
-            println "* [${t.title}](${t.html_url})"
+            println "* [${t.title.replaceAll(/([<>\[\]])/,'\\\\$1')}](${t.html_url.replaceAll(/([<>\(\)])/,'\\\\$1')})"
             // println "* [${t.title}](${t.html_url}) (${t.labels*.name.join(', ')})"
         }
     }
