@@ -1,4 +1,4 @@
-package us.vario.greg.ghnotes
+package us.schueler.greg.ghnotes
 
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientResponse

@@ -1,93 +1,59 @@
-apply plugin: 'groovy'
-apply plugin: 'idea'
-apply plugin: 'application'
-apply plugin: 'maven'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
+    }
+}
 
-group = "us.vario.greg"
-version = '0.1'
+plugins {
+    id 'pl.allegro.tech.build.axion-release' version '1.4.1'
+    id 'groovy'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'groovy'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group = "us.schueler.greg"
 description = "Generate release notes from github milestones and commits"
-mainClassName="us.vario.greg.ghnotes.Notes"
+mainClassName = "us.schueler.greg.ghnotes.Main"
 
 repositories {
     jcenter()
-}
-
-sourceSets {
-    main.groovy.srcDir 'src'
-    test.groovy.srcDir 'test'
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.2.1'
+    compile "com.github.simplifyops.cli-toolbelt:toolbelt:0.1.18"
+    compile "com.github.simplifyops.cli-toolbelt:toolbelt-snakeyaml:0.1.18"
+    compile "com.github.simplifyops.cli-toolbelt:toolbelt-json-jackson:0.1.18"
+    compile "com.github.simplifyops.cli-toolbelt:toolbelt-jewelcli:0.1.18"
+    compile 'org.codehaus.groovy:groovy-all:2.3.7'
     compile 'com.sun.jersey:jersey-client:1.17'
     compile 'com.sun.jersey:jersey-core:1.17'
     compile 'org.codehaus.jackson:jackson-core-asl:1.9.1'
     compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.1'
-    compile 'com.beust:jcommander:1.30'
+    testCompile "org.codehaus.groovy:groovy-all:2.3.7"
+//    compile 'com.beust:jcommander:1.30'
     testCompile 'junit:junit:4.10'
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
     testCompile "cglib:cglib-nodep:2.2"
     testCompile "org.objenesis:objenesis:2.1"
 }
 
-jar{
-    manifest{
-        attributes 'Main-Class':'us.vario.greg.ghnotes.Notes'
-    }
-}
+//jar{
+//    manifest{
+//        attributes 'Main-Class':'us.schueler.greg.ghnotes.Main'
+//    }
+//}
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
-}
-
-// code below this can be safely removed if you don't want publish library ever
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
-    }
-}
-
-apply plugin: 'maven-publish'
-apply plugin: 'bintray'
-apply plugin: 'shadow'
-
-publishing {
-    publications {
-        groovyMaven(MavenPublication) {
-            from components.java
-        }
-    }
-}
-
-// set bintrayUser & bintrayKey in gradle.properties
-bintray {
-
-    user = getPropertyOrUseDefault("bintrayUser", "fake_user")
-    key = getPropertyOrUseDefault("bintrayKey", "fake_key")
-    publications = ['groovyMaven']
-
-    def projectName = project.name
-    def projectDescription = project.description
-
-    pkg {
-        repo = 'maven' // or your repo name
-        name = projectName      // somehow project.* doesn't work in this closure
-        desc = projectDescription
-        licenses = ['Apache-2.0']
-    }
-    dryRun = true // whether to run this as dry-run, without deploying
-}
-
-String getPropertyOrUseDefault(String propertyName, String defaultValue) {
-    hasProperty(propertyName) ? getProperty(propertyName) : defaultValue
-}
-
-shadow {
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
+    gradleVersion = '2.13'
 }

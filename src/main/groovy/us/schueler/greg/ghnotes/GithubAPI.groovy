@@ -1,4 +1,4 @@
-package us.vario.greg.ghnotes
+package us.schueler.greg.ghnotes
 
 /**
  * $INTERFACE is ...

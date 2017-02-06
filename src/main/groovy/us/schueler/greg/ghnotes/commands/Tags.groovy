@@ -1,11 +1,14 @@
-package us.vario.greg.ghnotes
+package us.schueler.greg.ghnotes.commands
+
+import us.schueler.greg.ghnotes.Github
+import us.schueler.greg.ghnotes.options.TagsOptions
 
 /**
  * Created by greg on 1/30/15.
  */
 class Tags {
     Github github
-    public void format(TagsCommand command){
+    public void format(TagsOptions command){
 
         github.getTags().each{
             if(command.name){

@@ -2,7 +2,7 @@ import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientResponse
 import com.sun.jersey.api.client.WebResource
 import spock.lang.Specification
-import us.vario.greg.ghnotes.Github
+import us.schueler.greg.ghnotes.Github
 
 class BasicTest extends Specification {
 
