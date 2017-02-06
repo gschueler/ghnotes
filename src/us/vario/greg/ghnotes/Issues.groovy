@@ -9,9 +9,12 @@ package us.vario.greg.ghnotes
 class Issues {
     Github github
     IssuesCommand command
-    public static void formatIssuesMarkdown(List issues) {
+    public static void formatIssuesMarkdown(List issues, ms=null) {
         if (issues) {
             println "## Issues\n"
+            if(ms){
+                println "[Milestone ${ms.title}](${ms.html_url})\n"
+            }
         }
         issues.each { t ->
             println "* [${t.title.replaceAll(/([<>\[\]])/,'\\\\$1')}](${t.html_url.replaceAll(/([<>\(\)])/,'\\\\$1')})"
@@ -27,6 +30,14 @@ class Issues {
             "${author.value}" + (author.value != author.key ? " (${author.key})" : '')
         }.sort().each{ text->
             println "* ${text}"
+        }
+    }
+    public static void formatDescriptionMarkdown(Map milestone, label="Contributors") {
+        println "## Notes\n"
+        if(milestone.description){
+            println milestone.description
+        }else{
+            println "(Enter notes here)"
         }
     }
     public static Map<String,String> commitAuthors(List commits){
@@ -115,11 +126,12 @@ class Issues {
         if (command.debug) {
             println authors
         } else {
+            formatDescriptionMarkdown(getMilestone())
             formatContributorsMarkdown(authors)
             println()
             formatContributorsMarkdown(reporters, "Bug Reporters")
             println()
-            formatIssuesMarkdown(list)
+            formatIssuesMarkdown(list,getMilestone())
         }
     }
     public void formatIssues() {
@@ -127,10 +139,10 @@ class Issues {
         if(command.debug){
             println list
         }else{
-            formatIssuesMarkdown(list)
+            formatIssuesMarkdown(list,getMilestone())
         }
     }
-    public List listIssues() {
+    public def getMilestone(){
         def mslist = github.getMilestones()
         if(command.debug){
             System.err.println("milestones: "+mslist)
@@ -142,6 +154,13 @@ class Issues {
         }
         if(command.debug){
             System.err.println("getIssues("+ms.subMap(['title','url','number'])+","+command.state+")")
+        }
+        ms
+    }
+    public List listIssues() {
+        def ms = getMilestone()
+        if(!ms){
+            return
         }
         def issues = github.getIssues(ms, command.state)
 
