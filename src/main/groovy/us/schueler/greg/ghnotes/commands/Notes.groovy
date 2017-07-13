@@ -5,6 +5,7 @@ import com.simplifyops.toolbelt.Command
 import com.simplifyops.toolbelt.CommandOutput
 import us.schueler.greg.ghnotes.Github
 import us.schueler.greg.ghnotes.NotesGenerator
+import us.schueler.greg.ghnotes.options.GithubOrgOptions
 import us.schueler.greg.ghnotes.options.IssuesOptions
 import us.schueler.greg.ghnotes.options.GithubOptions
 
@@ -14,12 +15,12 @@ import us.schueler.greg.ghnotes.options.GithubOptions
  * Date: 2/12/14
  * Time: 12:05 PM
  */
-@Command
+@Command(description = "Generate Release Notes for a Github Milestone")
 class Notes {
 
 
     @CommandLineInterface(application = 'format')
-    interface NotesOptions extends GithubOptions, IssuesOptions {
+    interface NotesOptions extends GithubOptions, GithubOrgOptions, IssuesOptions {
 
     }
 

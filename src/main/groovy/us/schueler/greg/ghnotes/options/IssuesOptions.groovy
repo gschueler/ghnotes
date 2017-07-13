@@ -16,12 +16,12 @@ interface IssuesOptions {
     @Option(longName = "state", shortName = 's', description = "Issue state to find")
     String getState()
 
-    @Option(shortName = "t", description = "Issue tags to match, comma-separated")
+    @Option(shortName = "t", description = "Issue tags to match, space separated")
     List<String> getTags()
 
     boolean isTags()
 
-    @Option(shortName = "T", description = "Issue tags to ignore, comma-separated")
+    @Option(shortName = "T", description = "Issue tags to ignore, space separated")
     List<String> getIgnoreTags()
 
     boolean isIgnoreTags()
@@ -29,7 +29,7 @@ interface IssuesOptions {
     @Option()
     boolean getDebug()
 
-    @Option(shortName = "I", description = "Author ids to ignore")
+    @Option(shortName = "I", description = "Author ids to ignore, space separated")
     List<String> getIgnoreAuthors()
 
     boolean isIgnoreAuthors()

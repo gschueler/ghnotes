@@ -1,8 +1,5 @@
 package us.schueler.greg.ghnotes
 
-import com.simplifyops.toolbelt.Command
-import com.simplifyops.toolbelt.CommandOutput
-import us.schueler.greg.ghnotes.options.GithubOptions
 import us.schueler.greg.ghnotes.options.IssuesOptions
 
 /**

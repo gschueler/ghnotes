@@ -14,16 +14,11 @@ interface GithubOptions {
     @Unparsed
     List<String> getParameters()
 
-    @Option(shortName = "u", description = "Github Username (optional)")
+    @Option(shortName = "u", description = "Github Username")
     String getUser()
 
-    @Option(shortName = "p", description = "Github Password/authkey (optional)")
+    @Option(shortName = "p", description = "Github Password/authkey")
     String getPassword()
 
-    @Option(shortName = "o", description = "Github Organization name")
-    String getOrg()
-
-    @Option(shortName = "p", description = "Github Project name")
-    String getProject()
 
 }

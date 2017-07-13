@@ -9,11 +9,11 @@ import us.schueler.greg.ghnotes.options.GithubOptions
  * @since 4/14/17
  */
 
-@Command()
+@Command(description = "List public repos for the user")
 class Repos {
     @Command()
     public void list(GithubOptions opts) {
-        def gh = new Github(opts.user, opts.password, opts.org, opts.project)
+        def gh = new Github(opts.user, opts.password, null, null)
         gh.cachedir = new File("githubcache")
         if (!gh.cachedir.exists()) {
             gh.cachedir.mkdirs()

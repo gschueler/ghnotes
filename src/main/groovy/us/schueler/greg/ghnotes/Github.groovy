@@ -107,8 +107,6 @@ public class Github implements GithubAPI{
     boolean xmlDeclaration=true
     String org
     String project
-    String baseURL
-    String rootURL
     public Github(org, project) {
         this(null, null, org, project)
     }
@@ -117,13 +115,13 @@ public class Github implements GithubAPI{
         this.project=project
         restClient = mkClient()
         pathComponents= [ORG: org, PROJECT: project]
-        baseURL=createUri(BASE_URL + PROJ_PATH , pathComponents)
         if (user && password) {
             defaultHeaders = basicAuthHeader(user, password)
         }
         defaultHeaders['Content-Type'] = 'application/json'
         defaultAccept = 'application/json'
     }
+
     void setDebug(boolean debug){
         this.debug=debug
         if(debug){
