@@ -28,6 +28,7 @@ public class Github implements GithubAPI{
     static String COMMIT_SHA_PATH = COMMITS_PATH+ "/{SHA}"
     static String NEW_MILESTONE = "/milestones"
     static String GET_TAGS = "/tags"
+    static String GET_REPOS = "/user/repos"
     static String NEW_LABEL_PATH = "/labels"
     static String PULLS = "/pulls"
     static String PULL_NUMBER = PULLS+"/{NUMBER}"
@@ -107,6 +108,7 @@ public class Github implements GithubAPI{
     String org
     String project
     String baseURL
+    String rootURL
     public Github(org, project) {
         this(null, null, org, project)
     }
@@ -260,6 +262,19 @@ public class Github implements GithubAPI{
 
     public getTags() {
         getJson(GET_TAGS,false)
+    }
+
+    public getRepos(Map params = [:], String page = null) {
+
+        def reqUrl = page ?: (BASE_URL + GET_REPOS)
+
+        def response = get(restClient, reqUrl, [:], [:], params)
+        def nextpage = extractNextPageUrl(response)
+        if (nextpage) {
+            return responseJson(response) + (getRepos(null,nextpage))
+        } else {
+            return responseJson(response)
+        }
     }
 
     public getIssues(milestone = null, state = null, nextUrl = null) {
