@@ -271,7 +271,7 @@ public class Github implements GithubAPI{
         def response = get(restClient, reqUrl, [:], [:], params)
         def nextpage = extractNextPageUrl(response)
         if (nextpage) {
-            return responseJson(response) + (getRepos(null,nextpage))
+            return responseJson(response) + (getRepos(null, nextpage))
         } else {
             return responseJson(response)
         }

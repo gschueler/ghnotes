@@ -21,7 +21,17 @@ interface IssuesOptions {
 
     boolean isTags()
 
+    @Option(shortName = "T", description = "Issue tags to ignore, comma-separated")
+    List<String> getIgnoreTags()
+
+    boolean isIgnoreTags()
+
     @Option()
     boolean getDebug()
+
+    @Option(shortName = "I", description = "Author ids to ignore")
+    List<String> getIgnoreAuthors()
+
+    boolean isIgnoreAuthors()
 
 }

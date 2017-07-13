@@ -86,7 +86,7 @@ class NotesGenerator {
         issues.collect { github.getCommitsForIssue(it.number) }.flatten()
     }
 
-    public Map<String, String> getIssueContributors(List issues) {
+    public Map<String, String> getIssueContributors(List issues,List<String> ignoreAuthors=[]) {
         HashMap<String, String> names = [:]
         def icommits = getIssueCommits(issues)
         def iauthors = commitAuthors(icommits)
@@ -110,6 +110,9 @@ class NotesGenerator {
                 }
             }
         }
+        if(ignoreAuthors){
+            ignoreAuthors.each{names.remove(it)}
+        }
         names
     }
 
@@ -131,7 +134,7 @@ class NotesGenerator {
 
     public void format(IssuesOptions options) {
         def list = listIssues(options)
-        def authors = getIssueContributors(list)
+        def authors = getIssueContributors(list,options.getIgnoreAuthors())
         def reporters = getIssueReporters(list)
         if (options.debug) {
             println authors
@@ -185,6 +188,12 @@ class NotesGenerator {
                 System.err.println("Searching for tags: " + options.tags)
             }
             issues = issues.findAll { it.labels*.name.containsAll(options.tags) }
+        }
+        if(options.ignoreTags){
+            if (options.debug) {
+                System.err.println("Excluding tags: " + options.getIgnoreTags())
+            }
+            issues = issues.findAll { !it.labels*.name.any{options.getIgnoreTags().contains(it)} }
         }
         //println "milestone: ${ms.title} state=${state}${tags?' tag='+tags:''} has " + issues.size() + ' issues'
         issues
